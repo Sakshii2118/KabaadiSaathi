@@ -62,7 +62,7 @@ export default function KabadiDashboard() {
     }
 
     const MATERIAL_ICONS = { PLASTIC: '🧴', PAPER: '📄', METAL: '🔩', GLASS: '🪟', E_WASTE: '💻' }
-    const thresholdKg = 20
+    const thresholdKg = stats?.thresholdKg || 20
     const dailyPct = Math.min(((stats?.dailyCollectedKg || 0) / thresholdKg) * 100, 100)
     const kCoinPct = Math.min(((kcoins?.kCoinsBalance || 0) / 30) * 100, 100)
 

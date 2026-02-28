@@ -27,6 +27,9 @@ public class KabadiWala {
     private String otpCode;
     private LocalDateTime otpExpiresAt;
     private String area;
+    private String addressLine1;
+    private String addressLine2;
+    private String pincode;
 
     @Builder.Default
     @Column(nullable = false)

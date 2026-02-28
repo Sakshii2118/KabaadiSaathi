@@ -16,7 +16,8 @@ export default function KabadiAuthPage() {
     const [step, setStep] = useState('mobile')
     const [mobile, setMobile] = useState('')
     const [otp, setOtp] = useState('')
-    const [form, setForm] = useState({ name: '', area: '', preferredLanguage: 'en' })
+    const [form, setForm] = useState({ name: '', area: '', addressLine1: '', addressLine2: '', pincode: '', preferredLanguage: 'en' })
+    const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const [countdown, setCountdown] = useState(0)
 
@@ -52,8 +53,18 @@ export default function KabadiAuthPage() {
         finally { setLoading(false) }
     }
 
+    const validate = () => {
+        const e = {}
+        if (!form.name.trim()) e.name = 'Name is required'
+        if (!form.addressLine1.trim()) e.addressLine1 = 'Address Line 1 is required'
+        if (!form.pincode.trim()) e.pincode = 'Pincode is required'
+        else if (!/^\d{6}$/.test(form.pincode)) e.pincode = 'Must be 6 digits'
+        setErrors(e)
+        return Object.keys(e).length === 0
+    }
+
     const handleRegister = async () => {
-        if (!form.name.trim()) return toast.error('Name required')
+        if (!validate()) return
         setLoading(true)
         try {
             const res = await registerKabadi({ ...form, mobile })
@@ -65,10 +76,19 @@ export default function KabadiAuthPage() {
         finally { setLoading(false) }
     }
 
+    const Field = ({ label, field, mandatory, ...rest }) => (
+        <div className="input-group" style={{ marginBottom: '0.85rem' }}>
+            <label>{label}{mandatory && <span style={{ color: 'var(--danger)' }}> *</span>}</label>
+            <input className="input" value={form[field]} onChange={e => setForm(p => ({ ...p, [field]: e.target.value }))}
+                style={errors[field] ? { borderColor: 'var(--danger)' } : {}} {...rest} />
+            {errors[field] && <p style={{ color: 'var(--danger)', fontSize: '0.78rem', marginTop: '0.2rem' }}>{errors[field]}</p>}
+        </div>
+    )
+
     return (
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0d1117, #2a2000)', padding: '1.5rem' }}>
             <div style={{ position: 'fixed', top: '1rem', right: '1rem' }}><LanguageSwitcher /></div>
-            <motion.div className="card" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ width: '100%', maxWidth: 440 }}>
+            <motion.div className="card" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ width: '100%', maxWidth: 440, borderTop: '3px solid #FFC107' }}>
                 <button className="btn btn-ghost" style={{ marginBottom: '1.25rem', fontSize: '0.85rem' }} onClick={() => navigate('/')}><FiArrowLeft /> Back</button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                     <span style={{ fontSize: '2rem' }}>🛒</span>
@@ -97,9 +117,15 @@ export default function KabadiAuthPage() {
                     )}
                     {step === 'register' && (
                         <motion.div key="r" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                            <div className="input-group"><label>{t('auth.name')}</label><input className="input" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} /></div>
-                            <div className="input-group"><label>{t('auth.area')}</label><input className="input" value={form.area} onChange={e => setForm(p => ({ ...p, area: e.target.value }))} /></div>
-                            <div className="input-group">
+                            <Field label="Full Name" field="name" mandatory />
+                            <Field label="Address Line 1" field="addressLine1" mandatory placeholder="House/Street/Colony" />
+                            <Field label="Address Line 2" field="addressLine2" placeholder="Landmark, Area (optional)" />
+                            <Field label="Pincode" field="pincode" mandatory maxLength={6} placeholder="6-digit pincode" />
+                            <div className="input-group" style={{ marginBottom: '0.85rem' }}>
+                                <label>Working Area / Town</label>
+                                <input className="input" value={form.area} onChange={e => setForm(p => ({ ...p, area: e.target.value }))} placeholder="e.g. Lajpat Nagar, Delhi" />
+                            </div>
+                            <div className="input-group" style={{ marginBottom: '1.25rem' }}>
                                 <label>{t('auth.language')}</label>
                                 <select className="input" value={form.preferredLanguage} onChange={e => setForm(p => ({ ...p, preferredLanguage: e.target.value }))}>
                                     <option value="en">English</option><option value="hi">हिन्दी</option><option value="bn">বাংলা</option><option value="ta">தமிழ்</option><option value="mr">मराठी</option>

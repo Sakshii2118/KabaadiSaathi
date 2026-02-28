@@ -55,6 +55,7 @@ export default function CitizenAuthPage() {
 
     const handleRegister = async () => {
         if (!form.name.trim()) return toast.error('Name is required')
+        if (!form.addressLine1.trim()) return toast.error('Address Line 1 is required')
         if (!/^\d{6}$/.test(form.pincode)) return toast.error('Pincode must be 6 digits')
         setLoading(true)
         try {

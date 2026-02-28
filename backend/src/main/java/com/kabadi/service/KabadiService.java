@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -38,26 +39,50 @@ public class KabadiService {
         KabadiWala kw = getProfile(id);
         if (body.containsKey("name")) kw.setName(body.get("name"));
         if (body.containsKey("area")) kw.setArea(body.get("area"));
+        if (body.containsKey("addressLine1")) kw.setAddressLine1(body.get("addressLine1"));
+        if (body.containsKey("addressLine2")) kw.setAddressLine2(body.get("addressLine2"));
+        if (body.containsKey("pincode")) kw.setPincode(body.get("pincode"));
         if (body.containsKey("preferredLanguage")) kw.setPreferredLanguage(body.get("preferredLanguage"));
         if (body.containsKey("latitude")) kw.setLatitude(Double.parseDouble(body.get("latitude")));
         if (body.containsKey("longitude")) kw.setLongitude(Double.parseDouble(body.get("longitude")));
         return kabadiRepo.save(kw);
     }
 
+    @Transactional
     public Map<String, Object> getDashboard(Long id, String filter) {
         KabadiWala kw = getProfile(id);
-        List<WasteTransaction> txs = txRepo.findByKabadiWalaIdOrderByTransactionTimeDesc(id);
-        BigDecimal totalCollected = txs.stream()
+
+        // Total collected: sum of all transaction weights ever
+        List<WasteTransaction> allTxs = txRepo.findByKabadiWalaIdOrderByTransactionTimeDesc(id);
+        BigDecimal totalCollected = allTxs.stream()
             .map(WasteTransaction::getWeightKg)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return Map.of(
-            "totalCollectedKg", totalCollected,
-            "dailyCollectedKg", kw.getDailyCollectedKg(),
-            "thresholdUnlocked", kw.getDailyThresholdUnlocked(),
-            "kCoinsBalance", kw.getKCoinsBalance(),
-            "priorityActive", kw.getPriorityActive(),
-            "transactionCount", txs.size()
-        );
+
+        // Daily collected: always live from DB (today midnight → now)
+        LocalDateTime todayStart = LocalDate.now().atStartOfDay();
+        BigDecimal dailyCollected = txRepo.sumWeightByKabadiWalaSince(id, todayStart);
+        if (dailyCollected == null) dailyCollected = BigDecimal.ZERO;
+
+        int thresholdKg = getConfig("daily_unlock_threshold_kg", 20);
+        boolean thresholdUnlocked = dailyCollected.compareTo(BigDecimal.valueOf(thresholdKg)) >= 0;
+
+        // Keep entity in sync so K-coin logic stays consistent on next transaction
+        if (kw.getLastThresholdReset() == null || kw.getLastThresholdReset().isBefore(LocalDate.now())) {
+            kw.setDailyCollectedKg(dailyCollected);
+            kw.setDailyThresholdUnlocked(thresholdUnlocked);
+            kw.setLastThresholdReset(LocalDate.now());
+            kabadiRepo.save(kw);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalCollectedKg",  totalCollected);
+        result.put("dailyCollectedKg",  dailyCollected);
+        result.put("thresholdUnlocked", thresholdUnlocked);
+        result.put("thresholdKg",       thresholdKg);
+        result.put("kCoinsBalance",     kw.getKCoinsBalance());
+        result.put("priorityActive",    kw.getPriorityActive());
+        result.put("transactionCount",  allTxs.size());
+        return result;
     }
 
     public Map<String, Object> getKCoins(Long id) {

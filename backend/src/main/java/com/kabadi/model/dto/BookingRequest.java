@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class BookingRequest {
     @NotNull private Long userId;
+    private Long kabadiWalaId;
     private String pickupAddress;
     private Double latitude;
     private Double longitude;

@@ -51,37 +51,50 @@ public class TransactionService {
             .build();
         txRepo.save(tx);
 
-        // K-Coin calculation
+        // ── K-Coin Calculation ────────────────────────────────────
         int thresholdKg = getConfig("daily_unlock_threshold_kg", 20);
-        int coinsPerKg = getConfig("kcoins_per_extra_kg", 5);
+        int kgPerCoin   = getConfig("kcoins_per_extra_kg", 5);
 
-        // Reset daily if needed
+        // Reset daily counter if it's a new day
         if (kw.getLastThresholdReset() == null || kw.getLastThresholdReset().isBefore(LocalDate.now())) {
             kw.setDailyCollectedKg(BigDecimal.ZERO);
             kw.setDailyThresholdUnlocked(false);
             kw.setLastThresholdReset(LocalDate.now());
         }
 
-        BigDecimal newTotal = kw.getDailyCollectedKg().add(req.getWeightKg());
+        BigDecimal prevTotal = kw.getDailyCollectedKg();         // kg BEFORE this transaction
+        BigDecimal newTotal  = prevTotal.add(req.getWeightKg()); // kg AFTER  this transaction
         kw.setDailyCollectedKg(newTotal);
 
         int kCoinsEarned = 0;
-        if (newTotal.compareTo(BigDecimal.valueOf(thresholdKg)) >= 0) {
+        BigDecimal threshold = BigDecimal.valueOf(thresholdKg);
+        BigDecimal perCoin   = BigDecimal.valueOf(kgPerCoin);
+
+        if (newTotal.compareTo(threshold) >= 0) {
             kw.setDailyThresholdUnlocked(true);
-            BigDecimal extraKg = newTotal.subtract(BigDecimal.valueOf(thresholdKg));
-            kCoinsEarned = extraKg.divide(BigDecimal.valueOf(coinsPerKg), 0, RoundingMode.FLOOR).intValue();
+
+            // Coins already awarded by earlier transactions today (floor division)
+            BigDecimal prevExtra = prevTotal.subtract(threshold).max(BigDecimal.ZERO);
+            int prevCoins = prevExtra.divide(perCoin, 0, RoundingMode.FLOOR).intValue();
+
+            // Coins that should exist after this transaction (floor division)
+            BigDecimal newExtra = newTotal.subtract(threshold);
+            int newCoins = newExtra.divide(perCoin, 0, RoundingMode.FLOOR).intValue();
+
+            // Only award the incremental difference — never double-count
+            kCoinsEarned = newCoins - prevCoins;
             kw.setKCoinsBalance(kw.getKCoinsBalance() + kCoinsEarned);
         }
         kabadiRepo.save(kw);
 
-        return Map.of(
-            "transactionId", tx.getId(),
-            "amountPaid", amount,
-            "kCoinsEarned", kCoinsEarned,
-            "newKCoinBalance", kw.getKCoinsBalance(),
-            "dailyCollectedKg", kw.getDailyCollectedKg(),
-            "thresholdUnlocked", kw.getDailyThresholdUnlocked()
-        );
+        Map<String, Object> result = new HashMap<>();
+        result.put("transactionId",     tx.getId());
+        result.put("amountPaid",        amount);
+        result.put("kCoinsEarned",      kCoinsEarned);
+        result.put("newKCoinBalance",   kw.getKCoinsBalance());
+        result.put("dailyCollectedKg",  kw.getDailyCollectedKg());
+        result.put("thresholdUnlocked", kw.getDailyThresholdUnlocked());
+        return result;
     }
 
     public List<WasteTransaction> getKabadiTransactions(Long kabadiId, String filter) {
@@ -99,10 +112,10 @@ public class TransactionService {
     private LocalDateTime getFromDate(String filter) {
         if (filter == null) return null;
         return switch (filter.toLowerCase()) {
-            case "daily" -> LocalDateTime.now().toLocalDate().atStartOfDay();
+            case "daily"   -> LocalDateTime.now().toLocalDate().atStartOfDay();
             case "monthly" -> LocalDateTime.now().withDayOfMonth(1).toLocalDate().atStartOfDay();
-            case "yearly" -> LocalDateTime.now().withDayOfYear(1).toLocalDate().atStartOfDay();
-            default -> null;
+            case "yearly"  -> LocalDateTime.now().withDayOfYear(1).toLocalDate().atStartOfDay();
+            default        -> null;
         };
     }
 }

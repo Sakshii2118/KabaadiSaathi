@@ -18,6 +18,7 @@ public class BookingService {
 
     private final BookingRepository bookingRepo;
     private final UserRepository userRepo;
+    private final KabadiWalaRepository kabadiRepo;
 
     @Transactional
     public Booking createBooking(BookingRequest req) {
@@ -34,8 +35,13 @@ public class BookingService {
             ).trim();
         }
 
+        KabadiWala kabadiWala = (req.getKabadiWalaId() != null)
+            ? kabadiRepo.findById(req.getKabadiWalaId()).orElse(null)
+            : null;
+
         Booking booking = Booking.builder()
             .user(user)
+            .kabadiWala(kabadiWala)
             .pickupAddress(pickupAddr)
             .latitude(req.getLatitude())
             .longitude(req.getLongitude())

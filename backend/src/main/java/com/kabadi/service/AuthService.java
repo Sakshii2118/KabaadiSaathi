@@ -113,6 +113,9 @@ public class AuthService {
             .orElseThrow(() -> new BadRequestException("Mobile not found. Please verify OTP first."));
         kw.setName(req.getName());
         kw.setArea(req.getArea());
+        kw.setAddressLine1(req.getAddressLine1());
+        kw.setAddressLine2(req.getAddressLine2());
+        kw.setPincode(req.getPincode());
         kw.setPreferredLanguage(req.getPreferredLanguage() != null ? req.getPreferredLanguage() : "en");
         kabadiRepo.save(kw);
         String token = jwtUtil.generateToken(kw.getId(), "KABADI", kw.getName(), kw.getPreferredLanguage());
