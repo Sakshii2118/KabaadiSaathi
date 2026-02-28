@@ -1,0 +1,56 @@
+# ── Node / Frontend ──────────────────────────────────────────────
+node_modules/
+dist/
+.vite/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# ── Java / Maven / Spring Boot ───────────────────────────────────
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.tar.gz
+*.zip
+.mvn/wrapper/maven-wrapper.jar
+backend/.env
+
+# ── IDE / Editor ─────────────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Docker ───────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── OS ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ─────────────────────────────────────────────────────────
+*.log
+logs/
+spring.log
+
+# ── Secrets / Env ────────────────────────────────────────────────
+.env
+.env.local
+*.env
+requirements.md
+implementation_plan.md.resolved
+# ── Brain / AI artifacts ─────────────────────────────────────────
+.gemini/

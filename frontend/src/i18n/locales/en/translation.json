@@ -1,0 +1,117 @@
+{
+    "landing": {
+        "title": "Kabadi",
+        "tagline": "Recycle Smart. Earn Real.",
+        "citizen": "I am a Citizen",
+        "kabadi": "I am a Kabadi-wala"
+    },
+    "auth": {
+        "mobile": "Mobile Number",
+        "sendOtp": "Send OTP",
+        "verifyOtp": "Verify OTP",
+        "resend": "Resend OTP",
+        "otpPlaceholder": "Enter 6-digit OTP",
+        "register": "Register",
+        "name": "Full Name",
+        "address1": "Address Line 1",
+        "address2": "Address Line 2",
+        "pincode": "Pincode",
+        "language": "Preferred Language",
+        "area": "Area / Locality"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "bookings": "Bookings",
+        "bookPickup": "Book Pickup",
+        "findKabadi": "Find Kabadi",
+        "logTx": "Log Transaction",
+        "logout": "Logout"
+    },
+    "dashboard": {
+        "totalEarnings": "Total Earnings",
+        "totalWaste": "Total Waste Sold",
+        "transactions": "Transactions",
+        "filter": "Filter",
+        "daily": "Daily",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "material": "Material",
+        "weight": "Weight",
+        "amount": "Amount",
+        "date": "Date",
+        "kabadi": "Kabadi ID"
+    },
+    "kcoins": {
+        "balance": "K-Coin Balance",
+        "redeem": "Redeem K-Coins",
+        "priority": "Priority Active",
+        "validUntil": "Valid until",
+        "threshold": "Daily Threshold",
+        "unlocked": "Unlocked!",
+        "selectCommodity": "Select Commodity"
+    },
+    "booking": {
+        "schedule": "Schedule Pickup",
+        "pickupAddress": "Pickup Address",
+        "material": "Material Type",
+        "expectedWeight": "Expected Weight (kg)",
+        "scheduledAt": "Scheduled Date & Time",
+        "confirm": "Confirm Booking",
+        "status": {
+            "PENDING": "Pending",
+            "COMPLETED": "Completed",
+            "CANCELLED": "Cancelled"
+        }
+    },
+    "toast": {
+        "otpSent": "OTP sent!",
+        "otpVerified": "OTP verified!",
+        "registered": "Registration successful!",
+        "transactionLogged": "Transaction logged!",
+        "kcoinsEarned": "🪙 Earned {{count}} K-Coins!",
+        "invalidOtp": "Invalid OTP. Try again.",
+        "bookingCreated": "Pickup booked!",
+        "profileUpdated": "Profile updated!",
+        "languageUpdated": "Language updated!",
+        "error": "Something went wrong.",
+        "expandingSearch": "Expanding search area..."
+    },
+    "find": {
+        "searching": "Searching nearby kabadi-walas...",
+        "priorityWindow": "Showing priority kabadi-walas",
+        "refreshIn": "Refreshing in {{sec}}s",
+        "noKabadi": "No kabadi-walas found in your area.",
+        "retry": "Retry",
+        "distance": "{{km}} km away",
+        "book": "Book Pickup"
+    },
+    "profile": {
+        "wasteId": "Waste-Recycler ID",
+        "edit": "Edit Profile",
+        "save": "Save Changes"
+    },
+    "tx": {
+        "step1": "Select Material",
+        "step2": "Enter Details",
+        "step3": "Confirm",
+        "weight": "Weight (kg)",
+        "pricePerKg": "Price per kg (₹)",
+        "totalAmount": "Total Amount",
+        "citizenId": "Citizen Waste-Recycler ID (optional)",
+        "submit": "Log Transaction"
+    },
+    "admin": {
+        "overview": "Overview",
+        "users": "Users",
+        "kabadis": "Kabadi-walas",
+        "transactions": "Transactions",
+        "config": "Configuration",
+        "login": "Admin Login",
+        "username": "Username",
+        "password": "Password"
+    },
+    "language": {
+        "select": "Language"
+    }
+}
