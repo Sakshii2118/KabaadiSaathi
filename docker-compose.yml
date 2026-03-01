@@ -4,6 +4,14 @@ services:
   backend:
     build: ./backend
     container_name: kabadi-backend
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      APP_JWT_SECRET: ${JWT_SECRET}
+      APP_JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
     ports:
       - "8080:8080"
     restart: on-failure
