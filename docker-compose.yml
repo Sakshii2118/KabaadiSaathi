@@ -12,13 +12,22 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       APP_JWT_SECRET: ${JWT_SECRET}
       APP_JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
     ports:
       - "8080:8080"
     restart: on-failure
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        # Bake the API URL into the Vite/React bundle at image build time.
+        # Use /api so nginx proxies to the backend container.
+        VITE_API_URL: ${VITE_API_URL:-/api}
     container_name: kabadi-frontend
+    environment:
+      # Injected at nginx startup via envsubst in the Dockerfile CMD.
+      BACKEND_URL: ${BACKEND_URL:-http://backend:8080}
     ports:
       - "3000:80"
     depends_on:
