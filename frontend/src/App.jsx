@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
+import bgImage from './components/bg1.jpg'
 
 // Public
 import LandingPage from './pages/LandingPage.jsx'
@@ -27,6 +28,15 @@ import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 export default function App() {
     return (
         <AuthProvider>
+            {/* Global fixed background — auth pages cover this with their own layers */}
+            <div style={{
+                position: 'fixed', inset: 0, zIndex: -10,
+                backgroundImage: `url(${bgImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                filter: 'brightness(0.38) saturate(0.85)',
+            }} />
             <BrowserRouter>
                 <Toaster position="top-right" toastOptions={{ duration: 3500 }} />
                 <Routes>

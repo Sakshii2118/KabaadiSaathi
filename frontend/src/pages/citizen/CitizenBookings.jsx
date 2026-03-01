@@ -65,7 +65,7 @@ export default function CitizenBookings() {
             <Navbar userType="CITIZEN" />
             <div className="container" style={{ padding: '2rem 1.5rem' }}>
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-                    <h1 className="section-title">📅 {t('nav.bookings')}</h1>
+                    <h1 style={{ fontSize: '1.7rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '1.5rem' }}>{t('nav.bookings')}</h1>
                     {loading ? (
                         <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}><div className="loading-spinner" /></div>
                     ) : bookings.length === 0 ? (

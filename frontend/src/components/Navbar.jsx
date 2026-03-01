@@ -30,7 +30,7 @@ export default function Navbar({ userType }) {
 
     return (
         <nav className="navbar">
-            <div className="navbar-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>♻️ Kabadi</div>
+            <div className="navbar-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>KabaadiSaathi</div>
             <div className="navbar-links">
                 {links.map(l => (
                     <a key={l.to} className={`nav-link${location.pathname === l.to ? ' active' : ''}`} onClick={() => navigate(l.to)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>

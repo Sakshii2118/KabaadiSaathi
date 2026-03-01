@@ -37,7 +37,7 @@ export default function CitizenDashboard() {
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
                         <div>
-                            <h1 style={{ fontSize: '1.6rem', fontWeight: 800 }}>👋 {t('nav.dashboard')}</h1>
+                            <h1 style={{ fontSize: '1.7rem', fontWeight: 800, letterSpacing: '-0.02em' }}>{t('nav.dashboard')}</h1>
                             <p className="text-muted">{auth?.name}</p>
                         </div>
                         <div className="tabs">

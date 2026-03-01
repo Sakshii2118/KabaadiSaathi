@@ -72,7 +72,10 @@ export default function KabadiDashboard() {
             <div className="container" style={{ padding: '2rem 1.5rem' }}>
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
-                        <h1 style={{ fontSize: '1.6rem', fontWeight: 800 }}>🛒 {t('nav.dashboard')}</h1>
+                        <div>
+                            <h1 style={{ fontSize: '1.7rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Kabadi Dashboard</h1>
+                            <p className="text-muted" style={{ color: 'rgba(255,193,7,0.80)' }}>Kabadi-wala Portal</p>
+                        </div>
                         <div className="tabs">
                             {TABS.map(t2 => <button key={t2} className={`tab${tab === t2 ? ' active' : ''}`} onClick={() => setTab(t2)}>{t2.charAt(0).toUpperCase() + t2.slice(1)}</button>)}
                         </div>
@@ -187,7 +190,7 @@ export default function KabadiDashboard() {
                                         ) : (
                                             <div>
                                                 <h4 style={{ fontWeight: 700, marginBottom: '0.75rem' }}>How to earn K-Coins?</h4>
-                                                <p className="text-muted" style={{ fontSize: '0.88rem' }}>Collect 20+ kg/day to unlock the threshold, then earn 5 K-Coins per extra kg.</p>
+                                                <p className="text-muted" style={{ fontSize: '0.88rem' }}>Collect 20+ kg/day to unlock the threshold, then earn 1 K-Coins per extra 5 kg.</p>
                                             </div>
                                         )}
                                     </div>
