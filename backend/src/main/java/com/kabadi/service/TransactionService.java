@@ -55,6 +55,16 @@ public class TransactionService {
         int thresholdKg = getConfig("daily_unlock_threshold_kg", 20);
         int kgPerCoin   = getConfig("kcoins_per_extra_kg", 5);
 
+        // ✅ FIX 1: Null-safe the daily kg field — could be null for new entities
+        if (kw.getDailyCollectedKg() == null) {
+            kw.setDailyCollectedKg(BigDecimal.ZERO);
+        }
+
+        // ✅ FIX 2: Null-safe the kCoinsBalance field
+        if (kw.getKCoinsBalance() == null) {
+            kw.setKCoinsBalance(0);
+        }
+
         // Reset daily counter if it's a new day
         if (kw.getLastThresholdReset() == null || kw.getLastThresholdReset().isBefore(LocalDate.now())) {
             kw.setDailyCollectedKg(BigDecimal.ZERO);
@@ -73,16 +83,15 @@ public class TransactionService {
         if (newTotal.compareTo(threshold) >= 0) {
             kw.setDailyThresholdUnlocked(true);
 
-            // Coins already awarded by earlier transactions today (floor division)
             BigDecimal prevExtra = prevTotal.subtract(threshold).max(BigDecimal.ZERO);
             int prevCoins = prevExtra.divide(perCoin, 0, RoundingMode.FLOOR).intValue();
 
-            // Coins that should exist after this transaction (floor division)
             BigDecimal newExtra = newTotal.subtract(threshold);
             int newCoins = newExtra.divide(perCoin, 0, RoundingMode.FLOOR).intValue();
 
-            // Only award the incremental difference — never double-count
             kCoinsEarned = newCoins - prevCoins;
+
+            // ✅ FIX 3: Use Integer-safe addition
             kw.setKCoinsBalance(kw.getKCoinsBalance() + kCoinsEarned);
         }
         kabadiRepo.save(kw);
